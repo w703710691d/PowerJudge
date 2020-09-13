@@ -270,6 +270,7 @@ static int SC_C[512] = {
         SYS_write, SYSCALLS_INFINITE,
         SYS_writev, SYSCALLS_INFINITE,
         SYS_lseek, SYSCALLS_INFINITE,
+	SYS_fcntl, SYSCALLS_INFINITE,
         SYSCALLS_END
 
 };
@@ -303,6 +304,7 @@ static int SC_CPP[512] = {
         SYS_write, SYSCALLS_INFINITE,
         SYS_writev, SYSCALLS_INFINITE,
         SYS_lseek, SYSCALLS_INFINITE,
+	SYS_fcntl, SYSCALLS_INFINITE,
         SYSCALLS_END
 };
 
@@ -381,6 +383,7 @@ static int SC_JAVA[512] = {
         SYS_write, SYSCALLS_INFINITE,
         SYS_openat, SYSCALLS_INFINITE,
         SYS_prlimit64, SYSCALLS_INFINITE,
+	SYS_prctl, SYSCALLS_INFINITE,
         SYSCALLS_END
 };
 
@@ -432,6 +435,7 @@ static int SC_PYTHON[512] = {
         SYS_sysinfo, SYSCALLS_INFINITE,
         SYS_write, SYSCALLS_INFINITE,
         SYS_prlimit64, SYSCALLS_INFINITE,
+	SYS_tgkill, SYSCALLS_INFINITE,
         SYSCALLS_END
 };
 

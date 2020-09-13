@@ -140,10 +140,17 @@ void copy_python_runtime_python2(const char *work_dir) {
     copy_shell_runtime(work_dir);
     execute_cmd("/bin/mkdir -p %s/usr/include 2>>error.log", work_dir);
     execute_cmd("/bin/mkdir -p %s/usr/lib 2>>error.log", work_dir);
+    execute_cmd("/bin/mkdir -p %s/usr/lib64 2>>error.log", work_dir);
+
     execute_cmd("/bin/cp /usr/bin/python %s/ 2>>error.log", work_dir);
     execute_cmd("/bin/cp /usr/bin/python2* %s/ 2>>error.log", work_dir);
+
     execute_cmd("/bin/cp -a /usr/lib/python2* %s/usr/lib/ 2>>error.log", work_dir);
     execute_cmd("/bin/cp -a /usr/lib/libpython2* %s/usr/lib/ 2>>error.log", work_dir);
+
+    execute_cmd("/bin/cp -a /usr/lib64/python2* %s/usr/lib64/ 2>>error.log", work_dir);
+    execute_cmd("/bin/cp -a /usr/lib64/libpython2* %s/usr/lib64/ 2>>error.log", work_dir);
+    
     execute_cmd("/bin/cp -a /usr/include/python2* %s/usr/include/ 2>>error.log", work_dir);
 }
 
@@ -151,10 +158,17 @@ void copy_python_runtime_python3(const char *work_dir) {
     copy_shell_runtime(work_dir);
     execute_cmd("/bin/mkdir -p %s/usr/include 2>>error.log", work_dir);
     execute_cmd("/bin/mkdir -p %s/usr/lib 2>>error.log", work_dir);
+    execute_cmd("/bin/mkdir -p %s/usr/lib64 2>>error.log", work_dir);
+    
     execute_cmd("/bin/cp /usr/bin/python %s/ 2>>error.log", work_dir);
     execute_cmd("/bin/cp /usr/bin/python3* %s/ 2>>error.log", work_dir);
+    
     execute_cmd("/bin/cp -a /usr/lib/python3* %s/usr/lib/ 2>>error.log", work_dir);
     execute_cmd("/bin/cp -a /usr/lib/libpython3* %s/usr/lib/ 2>>error.log", work_dir);
+    
+    execute_cmd("/bin/cp -a /usr/lib64/python3* %s/usr/lib64/ 2>>error.log", work_dir);
+    execute_cmd("/bin/cp -a /usr/lib64/libpython3* %s/usr/lib64/ 2>>error.log", work_dir);
+
     execute_cmd("/bin/cp -a /usr/include/python3* %s/usr/include/ 2>>error.log", work_dir);
 }
 
