@@ -468,7 +468,7 @@ bool judge(const char *input_file,
 
         uint64_t real_time_limit = oj_solution.time_limit + time_limit_addtion;  // time fix
         // set real time alarm
-        if (EXIT_SUCCESS != malarm(ITIMER_REAL, real_time_limit)) {
+        if (EXIT_SUCCESS != malarm(ITIMER_VIRTUAL, real_time_limit)) {
             FM_LOG_FATAL("malarm for executor failed: %s", strerror(errno));
             exit(EXIT_PRE_JUDGE);
         }
