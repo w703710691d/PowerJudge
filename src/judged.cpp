@@ -30,22 +30,28 @@ ThreadSafeQueue<std::pair<int, oj_solution_t> > SendQueue;
 
 void ThreadWork() {
     while (isRunning) {
-        oj_solution_t oj_solution = ProcessQueue.GetFrontAndPop();
-        pthread_t ptid = pthread_self();
-        FM_LOG_TRACE("Thread id: %d", ptid);
-        run(oj_solution);
+        oj_solution_t *oj_solution = ProcessQueue.GetFrontAndPop();
+        if (oj_solution) {
+            pthread_t ptid = pthread_self();
+            FM_LOG_TRACE("Thread id: %d", ptid);
+            run(*oj_solution);
+            delete oj_solution;
+        }
     }
 }
 
 void SendWork() {
     while (isRunning) {
         auto item = SendQueue.GetFrontAndPop();
-        pthread_t ptid = pthread_self();
-        FM_LOG_TRACE("Send thread id: %d", ptid);
-        if (item.first == EXIT_OK) {
-            update_result(item.second);
-        } else {
-            update_system_error(item.first, item.second);
+        if (item) {
+            pthread_t ptid = pthread_self();
+            FM_LOG_TRACE("Send thread id: %d", ptid);
+            if (item->first == EXIT_OK) {
+                update_result(item->second);
+            } else {
+                update_system_error(item->first, item->second);
+            }
+            delete item;
         }
     }
 }
@@ -176,8 +182,8 @@ void work(int newsockfd, struct sockaddr_in cli_addr) {
             return;
         }
         FM_LOG_NOTICE("Here is the message: %s(%d)", buffer, n);
-        oj_solution_t oj_solution{};
-        if (parse_arguments(buffer, oj_solution) < 0) {
+        oj_solution_t *oj_solution = new oj_solution_t;
+        if (parse_arguments(buffer, *oj_solution) < 0) {
             FM_LOG_WARNING("Missing some parameters.");
             n = write(newsockfd, "Missing some parameters.", 24);
             if (n < 0) FM_LOG_WARNING("ERROR writing to socket");
@@ -215,7 +221,7 @@ void run(oj_solution_t &oj_solution) {
     pid_t pid = fork();
     if (pid < 0) {
         FM_LOG_FATAL("fork judger failed: %s", strerror(errno));
-        SendQueue.push(std::make_pair(EXIT_FORK_ERROR, oj_solution));
+        SendQueue.push(new std::pair<int, oj_solution_t>(EXIT_FORK_ERROR, oj_solution));
     } else if (pid == 0) {
         execl("/usr/local/bin/powerjudge",
               "/usr/local/bin/powerjudge",
@@ -230,7 +236,7 @@ void run(oj_solution_t &oj_solution) {
               NULL);
         stderr = freopen(stderr_file, "a+", stderr);
         FM_LOG_FATAL("exec error: %s", strerror(errno));
-        SendQueue.push(std::make_pair(EXIT_EXEC_ERROR, oj_solution));
+        SendQueue.push(new std::pair<int, oj_solution_t>(EXIT_EXEC_ERROR, oj_solution));
     } else {
         int status = 0;
         FM_LOG_TRACE("process ID=%d", pid);
@@ -242,31 +248,31 @@ void run(oj_solution_t &oj_solution) {
         {
             if (EXIT_SUCCESS == WEXITSTATUS(status)) {
                 FM_LOG_DEBUG("judge succeeded");
-                SendQueue.push(std::make_pair(EXIT_OK, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(EXIT_OK, oj_solution));
             } else if (EXIT_COMPILE_ERROR == WEXITSTATUS(status)) {
                 FM_LOG_TRACE("compile error");
-                SendQueue.push(std::make_pair(EXIT_OK, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(EXIT_OK, oj_solution));
             } else if (EXIT_JUDGE == WEXITSTATUS(status)) {
                 FM_LOG_TRACE("judge error");
-                SendQueue.push(std::make_pair(OJ_SE, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(OJ_SE, oj_solution));
             } else {
                 FM_LOG_TRACE("judge error");
-                SendQueue.push(std::make_pair(WEXITSTATUS(status), oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(WEXITSTATUS(status), oj_solution));
             }
         } else {
             if (WIFSIGNALED(status))    // killed by signal
             {
                 int signo = WTERMSIG(status);
                 FM_LOG_WARNING("judger killed by signal: %s", strsignal(signo));
-                SendQueue.push(std::make_pair(signo, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(signo, oj_solution));
             } else if (WIFSTOPPED(status))      // stopped by signal
             {
                 int signo = WSTOPSIG(status);
                 FM_LOG_FATAL("judger stopped by signal: %s\n", strsignal(signo));
-                SendQueue.push(std::make_pair(signo, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(signo, oj_solution));
             } else {
                 FM_LOG_FATAL("judger stopped with unknown reason, status(%d)", status);
-                SendQueue.push(std::make_pair(EXIT_UNKNOWN, oj_solution));
+                SendQueue.push(new std::pair<int, oj_solution_t>(EXIT_UNKNOWN, oj_solution));
             }
         }
     }

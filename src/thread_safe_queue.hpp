@@ -9,24 +9,48 @@
 #include <mutex>
 #include <condition_variable>
 
-template<class T>
+template<typename T>
 class ThreadSafeQueue {
 private:
-    std::queue<T> q;
+    std::queue<T *> q;
     std::mutex mut;
     std::condition_variable data_cond;
+    bool m_bRunning;
 public:
-    T GetFrontAndPop() {
-        std::unique_lock<std::mutex> lk(mut);
-        data_cond.wait(lk, [this] { return !this->q.empty(); });
-        T ret = q.front();
-        q.pop();
-        return ret;
+    ThreadSafeQueue() {
+        m_bRunning = false;
     }
 
-    void push(T x) {
+    void start() {
+        m_bRunning = true;
+    }
+
+    void stop() {
+        m_bRunning = false;
+        data_cond.notify_all();
+    }
+
+    T *GetFrontAndPop() {
         std::unique_lock<std::mutex> lk(mut);
-        q.push(x);
+        data_cond.wait(lk, [this] {
+            if (m_bRunning) {
+                return !this->q.empty();
+            } else {
+                return true;
+            }
+        });
+        if (m_bRunning) {
+            T *ret = q.front();
+            q.pop();
+            return ret;
+        } else {
+            return nullptr;
+        }
+    }
+
+    void push(T *x) {
+        std::unique_lock<std::mutex> lk(mut);
+        q.push(*x);
         data_cond.notify_one();
     }
 };
