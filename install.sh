@@ -88,6 +88,12 @@ if [ ! -f ${JAVA_POLICY_FILE} ]; then
 fi
 
 service judged stop
-make clean install
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make install
+cd ..
+
 service judged start
 service judged status

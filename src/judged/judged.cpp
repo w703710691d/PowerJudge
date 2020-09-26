@@ -21,7 +21,7 @@
 #include "src/log.h"
 #include "src/thread_safe_queue.hpp"
 #include "src/read_config.h"
-
+#include <vector>
 struct pidfh *pfh;
 bool isRunning = true;
 
@@ -40,6 +40,7 @@ void ThreadWork() {
     }
 }
 
+std::vector<std::thread> workThreadPool;
 void SendWork() {
     while (isRunning) {
         auto item = SendQueue.GetFrontAndPop();
@@ -109,13 +110,14 @@ int main(int argc, char *argv[], char *envp[]) {
     }
     FM_LOG_NOTICE("listen  backlog: %d", oj_config.backlog);
 
+#ifndef _DEBUG
     if (daemon(0, 0) == -1) {
         FM_LOG_FATAL("Cannot daemonize");
         pidfile_remove(pfh);
 
         exit(EXIT_FAILURE);
     }
-
+#endif
     print_word_dir();
     print_user_group();
 
@@ -136,12 +138,11 @@ int main(int argc, char *argv[], char *envp[]) {
     SendQueue.start();
 
     for (int i = 0; i < oj_config.thread_num; i++) {
-        std::thread t(ThreadWork);
-        t.detach();
+        workThreadPool.emplace_back(ThreadWork);
     }
     FM_LOG_NOTICE("thread count: %d", oj_config.thread_num);
 
-    std::thread(SendWork).detach();
+    workThreadPool.emplace_back(SendWork);
 
     while (isRunning) {
         int newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
@@ -149,7 +150,11 @@ int main(int argc, char *argv[], char *envp[]) {
             work(newsockfd, cli_addr);
         }
     }
-
+    SendQueue.stop();
+    ProcessQueue.stop();
+    for (auto& t : workThreadPool) {
+        t.join();
+    }
     pidfile_remove(pfh);
     close(sockfd);
     return 0;
@@ -159,8 +164,6 @@ void signal_handler(int signo) {
     if (signo == SIGTERM) {
         FM_LOG_NOTICE("SIGTERM received, Power Judge Exiting..");
         isRunning = false;
-        SendQueue.stop();
-        ProcessQueue.stop();
     }
 }
 
