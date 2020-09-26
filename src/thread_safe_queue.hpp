@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-27.
 //
 
@@ -50,7 +50,7 @@ public:
 
     void push(T *x) {
         std::unique_lock<std::mutex> lk(mut);
-        q.push(*x);
+        q.push(x);
         data_cond.notify_one();
     }
 };

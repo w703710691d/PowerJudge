@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 /*
@@ -10,7 +10,7 @@
 
 #include <cstdio>
 #include <cstdint>
-#include "judge_core.h"
+#include "src/judge_core.h"
 
 // 编译选项
 const char *CP_C11[] = {"gcc", "Main.c", "-fno-asm", "-lm", "-static", "-Wall",

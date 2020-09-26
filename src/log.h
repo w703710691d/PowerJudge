@@ -1,68 +1,51 @@
-//
-// Created by w703710691d on 18-8-24.
-//
-/*
- * Copyright 2014 power <power0721#gmail.com>
- * PowerOJ GPLv2
- */
-/*
-*
-* LOGGER v0.0.4
-* modified by power(power0721#gmail.com)
-* A simple logger for c/c++ under linux, multiprocess-safe
-*
-* ---- CopyLeft by Felix021 @ http://www.felix021.com ----
-*
-* LOG Format:
-* --LEVEL_NOTE--\x7 [Y-m-d H:m:s]\x7 [FILE:LINE]\x7 [EXTRA_INFO]\x7 log_info
-*   // LEVEL_NOTE stands for one of DEBUG/TRACE/NOTICE...
-*   // \x7 is a special character to separate logged fields.
-*
-* Usage:
-*   //Open log file first. Supply a log file name.
-*   log_open("log.txt");
-*
-*   //use it just as printf
-*   FM_LOG_TRACE("some info %d", 123);
-*
-*   //6 level: DEBUG, TRACE, NOTICE, MONITOR, WARNING, FATAL
-*   FM_LOG_DEBUG("hi there");
-*
-*   //Need EXTRA_INFO to be logged automatically?
-*   log_add_info("pid:123");
-*
-*   //You don't need to call log_close manually, it'll be called at exit
-*   log_close();
-*
-*/
-#ifndef POWERJUDGE_LOG_H
+﻿#ifndef POWERJUDGE_LOG_H
 #define POWERJUDGE_LOG_H
 
-int log_open(const char *filename);
+#include <string>
 
-void log_close();
+class PowerLogger {
+public:
+    enum LogLevel {
+        FATAL = 0,
+        WARNING = 1,
+        MONITOR = 2,
+        NOTICE = 3,
+        TRACE = 4,
+        DEBUG = 5
+    };
 
-void log_write(int, const char *, int, const char *, ...);
+    bool setLogPath(std::string path);
+    void setLogFileName(std::string fileName);
+    void setLogLevel(int loglevel);
+    void writeLog(
+        int level,
+        const char* srcFilePath,
+        const int srcLine,
+        const char* msg, ...);
+    static PowerLogger& instance();
 
-void log_add_info(const char *info);
+private:
+    PowerLogger();
+    ~PowerLogger();
 
+    std::string m_path;
+    std::string m_fileName;
+    FILE *m_pFile;
+    int m_logLevel;
+    const size_t LOG_BUFFER_SIZE = 8192;
+};
 
-#ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_DEBUG
-#endif
-
-#define LOG_FATAL        0
-#define LOG_WARNING      1
-#define LOG_MONITOR      2
-#define LOG_NOTICE       3
-#define LOG_TRACE        4
-#define LOG_DEBUG        5
-
-#define FM_LOG_DEBUG(x...)   log_write(LOG_DEBUG,   __FILE__, __LINE__, ##x)
-#define FM_LOG_TRACE(x...)   log_write(LOG_TRACE,   __FILE__, __LINE__, ##x)
-#define FM_LOG_NOTICE(x...)  log_write(LOG_NOTICE,  __FILE__, __LINE__, ##x)
-#define FM_LOG_MONITOR(x...) log_write(LOG_MONITOR, __FILE__, __LINE__, ##x)
-#define FM_LOG_WARNING(x...) log_write(LOG_WARNING, __FILE__, __LINE__, ##x)
-#define FM_LOG_FATAL(x...)   log_write(LOG_FATAL,   __FILE__, __LINE__, ##x)
+#define FM_LOG_DEBUG(x...) \
+PowerLogger::instance().writeLog(PowerLogger::DEBUG,   __FILE__, __LINE__, ##x)
+#define FM_LOG_TRACE(x...) \
+PowerLogger::instance().writeLog(PowerLogger::TRACE,   __FILE__, __LINE__, ##x)
+#define FM_LOG_NOTICE(x...) \
+PowerLogger::instance().writeLog(PowerLogger::NOTICE,  __FILE__, __LINE__, ##x)
+#define FM_LOG_MONITOR(x...) \
+PowerLogger::instance().writeLog(PowerLogger::MONITOR, __FILE__, __LINE__, ##x)
+#define FM_LOG_WARNING(x...) \
+PowerLogger::instance().writeLog(PowerLogger::WARNING, __FILE__, __LINE__, ##x)
+#define FM_LOG_FATAL(x...)  \
+PowerLogger::instance().writeLog(PowerLogger::FATAL,   __FILE__, __LINE__, ##x)
 
 #endif //POWERJUDGE_LOG_H

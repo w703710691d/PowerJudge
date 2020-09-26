@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{f6b37fa4-3c6d-4c67-8b4b-0ab9130d332f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\judge">
+      <UniqueIdentifier>{3badf21c-115a-4bed-b5f9-eb09c8266362}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\judge\db_updater.cpp">
+      <Filter>src\judge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\judge\judge.cpp">
+      <Filter>src\judge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\judge\syscalls.cpp">
+      <Filter>src\judge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\misc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\read_config.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\judge\db_updater.h">
+      <Filter>src\judge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\judge\judge.h">
+      <Filter>src\judge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\judge\syscalls.h">
+      <Filter>src\judge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\judge_core.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\read_config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-27.
 //
 /*
@@ -17,10 +17,10 @@
 #include <curl/curl.h>
 #include <wait.h>
 #include "judged.h"
-#include "misc.h"
-#include "log.h"
-#include "thread_safe_queue.hpp"
-#include "read_config.h"
+#include "src/misc.h"
+#include "src/log.h"
+#include "src/thread_safe_queue.hpp"
+#include "src/read_config.h"
 
 struct pidfh *pfh;
 bool isRunning = true;
@@ -57,7 +57,9 @@ void SendWork() {
 }
 
 int main(int argc, char *argv[], char *envp[]) {
-    log_open(LOG_FILE);
+    PowerLogger::instance().setLogPath("/var/log/judged");
+    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
+    PowerLogger::instance().setLogFileName("judged.log");
     FM_LOG_TRACE("---");
     check_pid();
 
@@ -129,6 +131,10 @@ int main(int argc, char *argv[], char *envp[]) {
     } else {
         FM_LOG_DEBUG("set signal_handler");
     }
+
+    ProcessQueue.start();
+    SendQueue.start();
+
     for (int i = 0; i < oj_config.thread_num; i++) {
         std::thread t(ThreadWork);
         t.detach();
@@ -153,6 +159,8 @@ void signal_handler(int signo) {
     if (signo == SIGTERM) {
         FM_LOG_NOTICE("SIGTERM received, Power Judge Exiting..");
         isRunning = false;
+        SendQueue.stop();
+        ProcessQueue.stop();
     }
 }
 

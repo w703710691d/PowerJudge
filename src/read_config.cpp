@@ -1,13 +1,13 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 #include <cstring>
 #include <cstdint>
 #include <cstdlib>
 #include "read_config.h"
-#include "misc.h"
-#include "log.h"
-#include "judge_core.h"
+#include "src/misc.h"
+#include "src/log.h"
+#include "src/judge_core.h"
 
 const char *DEFAULT_CFG_FILE = "/etc/judged.conf";
 uint16_t DEFAULT_PORT = 55555;

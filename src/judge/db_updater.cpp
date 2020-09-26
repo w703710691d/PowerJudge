@@ -1,11 +1,11 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 
 #include "db_updater.h"
-#include <mysql.h>
-#include "read_config.h"
-#include "log.h"
+#include <mysql/mysql.h>
+#include "src/read_config.h"
+#include "src/log.h"
 
 MYSQL mysql;
 bool mysqlOK = false;

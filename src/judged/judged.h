@@ -1,11 +1,11 @@
-//
+﻿//
 // Created by w703710691d on 18-8-27.
 //
 
 #ifndef POWERJUDGE_JUDGED_H
 #define POWERJUDGE_JUDGED_H
 
-#include "judge_core.h"
+#include "src/judge_core.h"
 
 const char *PID_FILE = "/var/run/judged.pid";
 const char *LOG_FILE = "/var/log/judged.log";

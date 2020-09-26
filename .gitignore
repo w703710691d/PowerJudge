@@ -17,6 +17,7 @@ a.out
 *.app
 
 bin/
+obj/
 test/temp/
 spj
 *.log
@@ -29,3 +30,7 @@ cmake-build-debug/
 cmake-build-release/
 
 .idea/
+
+*.vcxproj.user
+
+.vs/
