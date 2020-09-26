@@ -269,10 +269,10 @@ static int SC_C[512] = {
         SYS_uname, 1,
         SYS_write, SYSCALLS_INFINITE,
         SYS_writev, SYSCALLS_INFINITE,
-        SYS_lseek, SYSCALLS_INFINITE,        SYS_arch_prctl, 2,
+        SYS_lseek, SYSCALLS_INFINITE,        
+        SYS_arch_prctl, 2,
         SYS_fcntl, 4,
         SYSCALLS_END
-
 };
 
 // C++
@@ -499,7 +499,7 @@ static int SC_KOTLIN[512] = {
 
         SYSCALLS_END
 };
-
+#endif
 // 根据 SC_* 数组来初始化syscalls
 int init_syscalls(int lang) {
     int i;
@@ -558,4 +558,4 @@ bool is_valid_syscall(int syscall_id) {
     }
     return true;
 }
-#endif
+
