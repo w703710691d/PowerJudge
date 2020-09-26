@@ -270,7 +270,8 @@ static int SC_C[512] = {
         SYS_write, SYSCALLS_INFINITE,
         SYS_writev, SYSCALLS_INFINITE,
         SYS_lseek, SYSCALLS_INFINITE,
-	SYS_fcntl, SYSCALLS_INFINITE,
+        SYS_arch_prctl, 2,
+        SYS_fcntl, 4,
         SYSCALLS_END
 
 };
@@ -304,7 +305,8 @@ static int SC_CPP[512] = {
         SYS_write, SYSCALLS_INFINITE,
         SYS_writev, SYSCALLS_INFINITE,
         SYS_lseek, SYSCALLS_INFINITE,
-	SYS_fcntl, SYSCALLS_INFINITE,
+        SYS_arch_prctl, 2,
+        SYS_fcntl, 4,
         SYSCALLS_END
 };
 
