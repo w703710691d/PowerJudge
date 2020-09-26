@@ -502,7 +502,7 @@ static int SC_KOTLIN[512] = {
 
         SYSCALLS_END
 };
-
+#endif
 // 根据 SC_* 数组来初始化syscalls
 int init_syscalls(int lang) {
     int i;
@@ -562,4 +562,3 @@ bool is_valid_syscall(int syscall_id) {
     return true;
 }
 
-#endif
