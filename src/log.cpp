@@ -15,7 +15,12 @@
 #include <sys/stat.h>
 
 char LOG_LEVEL_NOTE[][10] = {
-    "FATAL", "WARNING", "MONITOR", "NOTICE", "TRACE", "DEBUG"};
+    "FATAL  ",
+    "WARNING",
+    "MONITOR",
+    "NOTICE ",
+    "TRACE  ",
+    "DEBUG  "};
 
 void PowerLogger::writeLog(int level, const char *file,
                const int line, const char *fmt, ...) {
@@ -44,7 +49,7 @@ void PowerLogger::writeLog(int level, const char *file,
     va_end(ap);
 
     int count = snprintf(writeBuffer, LOG_BUFFER_SIZE,
-        "[%s]\t[%s.%06ld][#%d]<%s:%d>%s\n",
+        "[%s][%s.%06ld][#%d]<%s:%d>%s\n",
         LOG_LEVEL_NOTE[level],
         datetimeBuffer, tv.tv_usec,
         getpid(),
