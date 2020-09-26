@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 
@@ -6,8 +6,8 @@
 #include <cstdio>
 #include <cstring>
 #include "syscalls.h"
-#include "judge_core.h"
-#include "log.h"
+#include "src/judge_core.h"
+#include "src/log.h"
 
 /*
  * syscalls 每个值对应的是该syscall可被调用的次数

@@ -1,4 +1,4 @@
-#PowerJudge#
+﻿#PowerJudge#
 Judge Core for PowerOJ on Linux platform.
 
 Based on UESTC and HUST judge core.

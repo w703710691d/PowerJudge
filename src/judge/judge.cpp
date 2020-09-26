@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 
@@ -16,8 +16,8 @@
 #include <sys/ptrace.h>
 #include <algorithm>
 #include "judge.h"
-#include "log.h"
-#include "misc.h"
+#include "src/log.h"
+#include "src/misc.h"
 #include "syscalls.h"
 #include "db_updater.h"
 
@@ -112,10 +112,8 @@ void parse_arguments(int argc, char *argv[]) {
                 exit(EXIT_BAD_PARAM);
         }
     }
-    char buff[PATH_SIZE];
-    snprintf(buff, PATH_SIZE, "%s/oj-judge.log", work_dir_root);
-    check_and_rename_log(buff);
-    log_open(buff);
+    PowerLogger::instance().setLogPath(work_dir_root);
+    PowerLogger::instance().setLogFileName("oj-judge.log");
 
     check_arguments();
 
@@ -139,7 +137,7 @@ void parse_arguments(int argc, char *argv[]) {
         oj_solution.memory_limit *= kotlin_memory_factor;
         oj_solution.time_limit *= kotlin_time_factor;
     }
-
+    char buff[PATH_SIZE];
     snprintf(buff, PATH_SIZE, "%s/last", work_dir_root);
     unlink(buff);
     if (symlink(oj_solution.work_dir, buff) == -1) {
@@ -224,7 +222,6 @@ void compile() {
         exit(EXIT_FORK_COMPILER);
     } else if (compiler == 0) {
         // child process: run compiler
-        log_add_info("compiler");
 
         set_compile_limit();
 
@@ -449,7 +446,6 @@ bool judge(const char *input_file,
         FM_LOG_FATAL("fork executor failed: %s", strerror(errno));
         exit(EXIT_PRE_JUDGE);
     } else if (executor == 0) {  // child process
-        log_add_info("executor");
 
         off_t fsize = file_size(output_file_std);
 
@@ -835,7 +831,6 @@ int oj_compare_output_spj(const char *file_in,    // std input file
         FM_LOG_FATAL("fork for spj failed: %s", strerror(errno));
         exit(EXIT_COMPARE_SPJ);
     } else if (pid_spj == 0) {  // child process
-        log_add_info("spj");
 
         // Set spj timeout
         if (EXIT_SUCCESS == malarm(ITIMER_REAL, spj_time_limit)) {

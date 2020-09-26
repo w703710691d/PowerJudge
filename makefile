@@ -1,4 +1,4 @@
-INC=-I/usr/include/mysql
+﻿INC=-I/usr/include/mysql
 LD=g++
 CXX=g++
 CXXFLAGS=$(INC) -Wall -O4 -std=c++17 -DBIG_JOINS=1 -fno-strict-aliasing -DNDEBUG

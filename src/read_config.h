@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by w703710691d on 18-8-24.
 //
 
@@ -6,7 +6,7 @@
 #define POWERJUDGE_READ_CONFIG_H
 
 #include <cstdio>
-#include "judge_core.h"
+#include "src/judge_core.h"
 
 struct oj_config_t {
     char ip[20];
