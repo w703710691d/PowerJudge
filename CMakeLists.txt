@@ -27,6 +27,7 @@ set(CMAKE_INSTALL_PREFIX "/usr/local")
 
 install(
         TARGETS powerjudged powerjudge
+	RUNTIME DESTINATION bin
 )
 
 install(
