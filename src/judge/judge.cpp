@@ -22,13 +22,15 @@
 #include "db_updater.h"
 
 int main(int argc, char *argv[], char *envp[]) {
-    if (nice(10) == -1) {  // increase nice value(decrease pripority)
-        FM_LOG_WARNING("increase nice value failed: %s", strerror(errno));
-    }
+    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
 
     init();
 
     parse_arguments(argc, argv);
+
+    if (nice(10) == -1) {  // increase nice value(decrease pripority)
+        FM_LOG_WARNING("increase nice value failed: %s", strerror(errno));
+    }
 
     if (geteuid() == 0) {  // effective user is not root
         FM_LOG_FATAL("please do not run as root, run as judge");
