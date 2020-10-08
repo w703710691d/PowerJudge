@@ -17,12 +17,16 @@ const char *CP_C11[] = {"gcc", "Main.c", "-fno-asm", "-lm", "-static", "-Wall",
                         "-std=gnu11", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_C99[] = {"gcc", "Main.c", "-fno-asm", "-lm", "-static", "-Wall",
                         "-std=gnu99", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
+const char *CP_C18[] = {"gcc", "Main.c", "-fno-asm", "-lm", "-static", "-Wall",
+                        "-std=gnu18", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_CC11[] = {"g++", "Main.cc", "-fno-asm", "-lm", "-static", "-Wall",
                          "-std=gnu++11", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_CC14[] = {"g++", "Main.cc", "-fno-asm", "-lm", "-static", "-Wall",
                          "-std=gnu++14", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_CC17[] = {"g++", "Main.cc", "-fno-asm", "-lm", "-static", "-Wall",
                          "-std=gnu++17", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
+const char *CP_CC20[] = {"g++", "Main.cc", "-fno-asm", "-lm", "-static", "-Wall",
+                         "-std=gnu++20", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_CC98[] = {"g++", "Main.cc", "-fno-asm", "-lm", "-static", "-Wall",
                          "-std=gnu++98", "-O4", "-pipe", "-march=native", "-DONLINE_JUDGE", "-o", "Main", nullptr};
 const char *CP_PAS[] = {"fpc", "Main.pas", "-O2", "-Co", "-Cr", "-Ct", "-Ci", nullptr};
