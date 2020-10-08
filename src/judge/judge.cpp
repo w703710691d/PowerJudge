@@ -166,10 +166,12 @@ void check_arguments() {
     switch (oj_solution.lang) {
         case LANG_C99:
         case LANG_C11:
+        case LANG_C18:
         case LANG_CPP98:
         case LANG_CPP11:
         case LANG_CPP14:
         case LANG_CPP17:
+        case LANG_CPP20:
         case LANG_PASCAL:
         case LANG_JAVA:
         case LANG_PYTHON27:
@@ -245,6 +247,10 @@ void compile() {
                 print_compiler(CP_C11);
                 execvp(CP_C11[0], (char *const *) CP_C11);
                 break;
+            case LANG_C18:
+                print_compiler(CP_C18);
+                execvp(CP_C18[0], (char *const *) CP_C18);
+                break;
             case LANG_CPP98:
                 print_compiler(CP_CC98);
                 execvp(CP_CC98[0], (char *const *) CP_CC98);
@@ -258,8 +264,12 @@ void compile() {
                 execvp(CP_CC14[0], (char *const *) CP_CC14);
                 break;
             case LANG_CPP17:
-                print_compiler(CP_CC98);
-                execvp(CP_CC98[0], (char *const *) CP_CC17);
+                print_compiler(CP_CC17);
+                execvp(CP_CC17[0], (char *const *) CP_CC17);
+                break;
+            case LANG_CPP20:
+                print_compiler(CP_CC20);
+                execvp(CP_CC20[0], (char *const *) CP_CC20);
                 break;
             case LANG_PASCAL:
                 print_compiler(CP_PAS);
@@ -698,7 +708,7 @@ bool check_spj_source(const char *name) {
 }
 
 void compile_spj(const char *source, char *target) {
-    int status = execute_cmd("g++ -lm -static -w -std=gnu++17 -O4 -o %s %s", target, source);
+    int status = execute_cmd("g++ -lm -static -w -std=gnu++20 -O4 -o %s %s", target, source);
     if (status == -1) {
         FM_LOG_WARNING("compile spj failed: %s", strerror(errno));
     }
@@ -1003,10 +1013,12 @@ void fix_java_result(const char *stdout_file, const char *stderr_file) {
 int fix_gcc_result(const char *stderr_compiler) {
     if (oj_solution.lang != LANG_C99 &&
         oj_solution.lang != LANG_C11 &&
+        oj_solution.lang != LANG_C18 &&
         oj_solution.lang != LANG_CPP98 &&
         oj_solution.lang != LANG_CPP11 &&
         oj_solution.lang != LANG_CPP14 &&
-        oj_solution.lang != LANG_CPP17) {
+        oj_solution.lang != LANG_CPP17 &&
+        oj_solution.lang != LANG_CPP20) {
         return 0;
     }
 

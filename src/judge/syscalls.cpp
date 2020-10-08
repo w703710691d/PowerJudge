@@ -510,12 +510,14 @@ int init_syscalls(int lang) {
     switch (lang) {
         case LANG_C11:
         case LANG_C99:
+        case LANG_C18:
             p = SC_C;
             break;
         case LANG_CPP98:
         case LANG_CPP11:
         case LANG_CPP14:
         case LANG_CPP17:
+        case LANG_CPP20:
             p = SC_CPP;
             break;
         case LANG_PASCAL:

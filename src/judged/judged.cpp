@@ -110,7 +110,7 @@ int main(int argc, char *argv[], char *envp[]) {
     }
     FM_LOG_NOTICE("listen  backlog: %d", oj_config.backlog);
 
-#ifndef _DEBUG
+#ifdef NDEBUG
     if (daemon(0, 0) == -1) {
         FM_LOG_FATAL("Cannot daemonize");
         pidfile_remove(pfh);
