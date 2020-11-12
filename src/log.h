@@ -14,8 +14,8 @@ public:
         DEBUG = 5
     };
 
-    bool setLogPath(std::string path);
-    void setLogFileName(std::string fileName);
+    bool setLogPath(const std::string &path);
+    void setLogFileName(const std::string &fileName);
     void setLogLevel(int loglevel);
     void writeLog(
         int level,

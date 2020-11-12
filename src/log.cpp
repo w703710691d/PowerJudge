@@ -2,17 +2,15 @@
 // Created by w703710691d on 18-8-24.
 //
 #include <cstring>
-#include <cstdlib>
 #include <cstdio>
 #include <ctime>
-#include <sys/time.h>
 #include <cstdarg>
 #include <unistd.h>
 #include <sys/file.h>
 #include "log.h"
-#include <unistd.h>
 #include <climits>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 char LOG_LEVEL_NOTE[][10] = {
     "FATAL  ",
@@ -71,7 +69,7 @@ void PowerLogger::writeLog(int level, const char *file,
     }
 }
 
-bool PowerLogger::setLogPath(std::string path) {
+bool PowerLogger::setLogPath(const std::string &path) {
     if (access(path.c_str(), F_OK | W_OK | R_OK | X_OK)) {
         return false;
     }
@@ -87,7 +85,7 @@ bool PowerLogger::setLogPath(std::string path) {
     return true;
 }
 
-void PowerLogger::setLogFileName(std::string fileName)
+void PowerLogger::setLogFileName(const std::string &fileName)
 {
     if (m_pFile) {
         fclose(m_pFile);
