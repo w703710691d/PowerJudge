@@ -39,8 +39,6 @@ void make_diff_out(FILE *f1, FILE *f2, int c1, int c2, const char *work_dir, con
 
 void make_diff_out2(const char *file_out, const char *file_user, const char *work_dir, const char *path);
 
-void check_and_rename_log(const char *filename);
-
 #ifndef FAST_JUDGE
 
 void copy_shell_runtime(const char *work_dir);

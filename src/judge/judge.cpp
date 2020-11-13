@@ -114,8 +114,9 @@ void parse_arguments(int argc, char *argv[]) {
                 exit(EXIT_BAD_PARAM);
         }
     }
-    PowerLogger::instance().setLogPath(work_dir_root);
-    PowerLogger::instance().setLogFileName("oj-judge.log");
+    PowerLogger::instance().setLogDir(work_dir_root);
+    PowerLogger::instance().setBizName("PowerJudger");
+    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
 
     check_arguments();
 
@@ -796,7 +797,7 @@ void set_limit(off_t fsize) {
     }
 
     // Output file size limit, raise SIGXFSZ
-    lim.rlim_cur = lim.rlim_max = (rlim_t) (4 * MAX_LOG_FILE_SIZE);
+    lim.rlim_cur = lim.rlim_max = (rlim_t) (64 * STD_MB);
     if (setrlimit(RLIMIT_FSIZE, &lim) < 0) {
         FM_LOG_FATAL("setrlimit RLIMIT_FSIZE failed: %s", strerror(errno));
         exit(EXIT_SET_LIMIT);

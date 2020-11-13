@@ -254,16 +254,3 @@ void make_diff_out2(const char *file_out, const char *file_user, const char *wor
     fclose(fp_exe);
     fclose(out);
 }
-
-void check_and_rename_log(const char *filename) {
-    off_t fsize = file_size(filename);
-    if (fsize < MAX_LOG_FILE_SIZE) {
-        return;
-    }
-
-    char backup_filename[PATH_SIZE];
-    snprintf(backup_filename, PATH_SIZE, "%s.1", filename);
-
-    rename(filename, backup_filename);
-}
-

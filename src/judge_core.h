@@ -37,7 +37,7 @@ const char result_str[][10] = {"AC", "PE", "TLE", "MLE", "WA", "RE", "OLE", "CE"
 #define STD_MB 1048576
 #define PATH_SIZE 4096
 #define BUFF_SIZE 8192
-#define MAX_LOG_FILE_SIZE (STD_MB << 4)
+
 
 // judge 类型
 #define ACM 0

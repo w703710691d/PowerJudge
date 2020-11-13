@@ -1,16 +1,14 @@
-﻿//
-// Created by w703710691d on 18-8-24.
-//
-#include <cstring>
+﻿#include <cstring>
 #include <cstdio>
 #include <ctime>
 #include <cstdarg>
 #include <unistd.h>
 #include <sys/file.h>
 #include "log.h"
-#include <climits>
-#include <sys/stat.h>
 #include <sys/time.h>
+#include <fstream>
+#include "misc.h"
+#include <list>
 
 char LOG_LEVEL_NOTE[][10] = {
     "FATAL  ",
@@ -20,17 +18,18 @@ char LOG_LEVEL_NOTE[][10] = {
     "TRACE  ",
     "DEBUG  "};
 
+const size_t LOG_BUFFER_SIZE = 8192;
+
 void PowerLogger::writeLog(int level, const char *file,
-               const int line, const char *fmt, ...) {
+                           int line, const char *fmt, ...) {
     if (m_logLevel < level) {
         return;
     }
-    if (!m_pFile) {
-        m_pFile = fopen((m_path + m_fileName).c_str(), "a");
-        if (!m_pFile) {
-            perror("cannot open log file");
-            return;
-        }
+    if (!m_pFile && !_createLog()) {
+        return;
+    }
+    if(_isLogTimeOut() && !_createLog()) {
+        return;
     }
     char writeBuffer[LOG_BUFFER_SIZE];
     char logBuffer[LOG_BUFFER_SIZE];
@@ -69,51 +68,38 @@ void PowerLogger::writeLog(int level, const char *file,
     }
 }
 
-bool PowerLogger::setLogPath(const std::string &path) {
-    if (access(path.c_str(), F_OK | W_OK | R_OK | X_OK)) {
+bool PowerLogger::setLogDir(const std::string &strLogDir) {
+    std::filesystem::path logDirPath(strLogDir);
+    if(!std::filesystem::exists(logDirPath) &&
+        !std::filesystem::create_directories(logDirPath)) {
         return false;
     }
-    struct stat pathStat{};
-    stat(path.c_str(), &pathStat);
-    if (!S_ISDIR(pathStat.st_mode)){
+    std::filesystem::directory_entry dir(logDirPath);
+    if(!dir.is_directory()) {
         return false;
     }
-    m_path = path;
-    if (m_path.back() != '/') {
-        m_path.append(1, '/');
+    if(m_pFile) {
+        fclose(m_pFile);
+        m_pFile = nullptr;
     }
+    m_logDirPath = logDirPath;
+    _clearLog();
     return true;
 }
 
-void PowerLogger::setLogFileName(const std::string &fileName)
-{
-    if (m_pFile) {
-        fclose(m_pFile);
-    }
-    m_fileName = fileName;
-}
-
-void PowerLogger::setLogLevel(int loglevel)
-{
+void PowerLogger::setLogLevel(int loglevel) {
     m_logLevel = loglevel;
 }
 
-PowerLogger::PowerLogger() {
-    m_pFile = nullptr;
-    char path[PATH_MAX];
-    if (readlink("/proc/self/exe", path, PATH_MAX) <= 0) {
-        return;
-    }
-    char *sep = strrchr(path, '/');
-    if (sep == nullptr) {
-        return;
-    }
-    m_path = std::string(path, sep + 1);
-    m_fileName = sep + 1;
+PowerLogger::PowerLogger()
+    : m_pFile(nullptr)
+    , m_bizName("PowerLog")
+    , m_logDirPath(".")
+    , m_logCycle(7)
+    , m_logLevel(PowerLogger::NOTICE){
 }
 
-PowerLogger::~PowerLogger()
-{
+PowerLogger::~PowerLogger(){
     if (m_pFile) {
         fclose(m_pFile);
         m_pFile = nullptr;
@@ -123,4 +109,79 @@ PowerLogger::~PowerLogger()
 PowerLogger &PowerLogger::instance() {
     static PowerLogger logger;
     return logger;
+}
+
+void PowerLogger::setBizName(const std::string &bizName) {
+    m_bizName = bizName;
+    if(m_pFile) {
+        fclose(m_pFile);
+        m_pFile = nullptr;
+    }
+    _clearLog();
+}
+
+void PowerLogger::setLogCycle(int days) {
+    m_logCycle = days;
+    _clearLog();
+}
+
+void PowerLogger::_clearLog() {
+    std::filesystem::directory_iterator fileList(m_logDirPath);
+    std::list<std::filesystem::path> removeList;
+    for(auto &file : fileList) {
+        if(file.status().type() ==
+            std::filesystem::file_type::regular) {
+            std::string fileName = file.path().filename();
+            if(fileName.compare(0, m_bizName.size(), m_bizName) == 0 &&
+                fileName.compare(fileName.size() - m_bizName.size(), m_bizName.size(), m_bizName) == 0 &&
+                fileName.length() == m_bizName.size() + 4)
+            {
+                std::string logTimeStr = fileName.substr(m_bizName.size(), 8);
+                int year = std::stoi(logTimeStr.substr(0, 4));
+                int month = std::stoi(logTimeStr.substr(4, 2));
+                int day = std::stoi(logTimeStr.substr(6, 2));
+                tm fileTm{.tm_mday = day, .tm_mon = month - 1, .tm_year = year - 1900};
+                time_t fileTime = mktime(&fileTm);
+                time_t nowTime = time(nullptr);
+                if(nowTime - fileTime >= m_logCycle * 24 * 60 * 60) {
+                    removeList.emplace_back(file.path());
+                }
+            }
+        }
+    }
+    for(auto &filePath : removeList) {
+        std::filesystem::remove(filePath);
+    }
+}
+
+bool PowerLogger::_createLog() {
+    if(m_pFile != nullptr) {
+        fclose(m_pFile);
+    }
+    time_t now = time(nullptr);
+    now = now / (24 * 60 * 60) * 24 * 60 * 60;
+    m_logCreateTime = now;
+    tm *nowTm = localtime(&now);
+    char fileName[m_bizName.size() + 32];
+    sprintf(fileName, "%s%04d%02d%02d.log",
+            m_bizName.c_str(),
+            nowTm->tm_year + 1900,
+            nowTm->tm_mon + 1,
+            nowTm->tm_mday);
+    std::filesystem::path filePath = m_logDirPath / (const char *)fileName;
+    m_pFile = fopen(filePath.c_str(), "a");
+    if(m_pFile == nullptr) {
+        perror("cannot open log file");
+        return false;
+    }
+    return true;
+}
+
+bool PowerLogger::_isLogTimeOut() {
+    time_t now = time(nullptr);
+    if(now - m_logCreateTime >= 24 * 60 * 60) {
+        return true;
+    } else {
+        return false;
+    }
 }

@@ -58,9 +58,9 @@ void SendWork() {
 }
 
 int main(int argc, char *argv[], char *envp[]) {
-    PowerLogger::instance().setLogPath("/var/log/judged");
+    PowerLogger::instance().setLogDir("/var/log/judged");
     PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
-    PowerLogger::instance().setLogFileName("judged.log");
+    PowerLogger::instance().setBizName("PowerJudged");
     FM_LOG_TRACE("---");
     check_pid();
 

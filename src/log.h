@@ -2,6 +2,7 @@
 #define POWERJUDGE_LOG_H
 
 #include <string>
+#include <filesystem>
 
 class PowerLogger {
 public:
@@ -11,28 +12,34 @@ public:
         MONITOR = 2,
         NOTICE = 3,
         TRACE = 4,
-        DEBUG = 5
+        DEBUG = 5,
     };
 
-    bool setLogPath(const std::string &path);
-    void setLogFileName(const std::string &fileName);
+    bool setLogDir(const std::string &strLogDir);
+    void setBizName(const std::string &bizName);
     void setLogLevel(int loglevel);
+    void setLogCycle(int days);
+
     void writeLog(
         int level,
         const char* srcFilePath,
-        const int srcLine,
+        int srcLine,
         const char* msg, ...);
     static PowerLogger& instance();
 
 private:
     PowerLogger();
     ~PowerLogger();
-
-    std::string m_path;
-    std::string m_fileName;
+    std::filesystem::path m_logDirPath;
+    std::string m_bizName;
     FILE *m_pFile;
     int m_logLevel;
-    const size_t LOG_BUFFER_SIZE = 8192;
+    int m_logCycle;
+    time_t m_logCreateTime;
+
+    bool _isLogTimeOut();
+    void _clearLog();
+    bool _createLog();
 };
 
 #define FM_LOG_DEBUG(x...) \
