@@ -56,7 +56,6 @@ void PowerLogger::writeLog(int level, const char *file,
     if (level == FATAL) {
         fprintf(stderr, "%s\n", logBuffer);
     }
-
     int log_fd = m_pFile->_fileno;
     if (flock(log_fd, LOCK_EX) == 0) {
         if (write(log_fd, writeBuffer, count) < 0) {
@@ -159,9 +158,12 @@ bool PowerLogger::_createLog() {
         fclose(m_pFile);
     }
     time_t now = time(nullptr);
-    now = now / (24 * 60 * 60) * 24 * 60 * 60;
-    m_logCreateTime = now;
     tm *nowTm = localtime(&now);
+    nowTm->tm_sec = 0;
+    nowTm->tm_min = 0;
+    nowTm->tm_hour = 0;
+    now = mktime(nowTm);
+    m_logCreateTime = now;
     char fileName[m_bizName.size() + 32];
     sprintf(fileName, "%s%04d%02d%02d.log",
             m_bizName.c_str(),
