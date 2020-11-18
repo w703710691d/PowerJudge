@@ -1,0 +1,3 @@
+[submodule "src/powerlog"]
+	path = src/powerlog
+	url = https://git.swustacm.cn/powermodel/powerlog.git
