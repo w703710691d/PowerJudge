@@ -5,10 +5,10 @@
 #ifndef POWERJUDGE_JUDGED_H
 #define POWERJUDGE_JUDGED_H
 
-#include "src/judge_core.h"
+#include "judge_core.h"
 
 const char *PID_FILE = "/var/run/judged.pid";
-const char *LOG_FILE = "/var/log/judged.log";
+
 const int MAX_UPLOAD_FILE_SIZE = 4096;
 struct oj_solution_t {
     char sid[15];           // solution id

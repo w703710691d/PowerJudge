@@ -17,10 +17,10 @@
 #include <curl/curl.h>
 #include <wait.h>
 #include "judged.h"
-#include "src/misc.h"
-#include "src/log.h"
-#include "src/thread_safe_queue.hpp"
-#include "src/read_config.h"
+#include "misc.h"
+#include "powerlog/powerlog.h"
+#include "thread_safe_queue.hpp"
+#include "read_config.h"
 #include <vector>
 struct pidfh *pfh;
 bool isRunning = true;

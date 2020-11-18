@@ -4,10 +4,9 @@
 #include <cstdarg>
 #include <unistd.h>
 #include <sys/file.h>
-#include "log.h"
+#include "powerlog.h"
 #include <sys/time.h>
 #include <fstream>
-#include "misc.h"
 #include <list>
 
 char LOG_LEVEL_NOTE[][10] = {

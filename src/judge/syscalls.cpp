@@ -6,8 +6,8 @@
 #include <cstdio>
 #include <cstring>
 #include "syscalls.h"
-#include "src/judge_core.h"
-#include "src/log.h"
+#include "judge_core.h"
+#include "powerlog.h"
 
 /*
  * syscalls 每个值对应的是该syscall可被调用的次数

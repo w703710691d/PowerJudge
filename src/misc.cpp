@@ -8,11 +8,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "misc.h"
-#include "log.h"
+#include "powerlog.h"
 #include "judge_core.h"
 #include <sys/time.h>
 #include <cstdarg>
-#include "errno.h"
 
 void fatal_error(const char *msg) {
     perror(msg);

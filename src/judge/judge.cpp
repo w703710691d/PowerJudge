@@ -16,8 +16,8 @@
 #include <sys/ptrace.h>
 #include <algorithm>
 #include "judge.h"
-#include "src/log.h"
-#include "src/misc.h"
+#include "powerlog.h"
+#include "misc.h"
 #include "syscalls.h"
 #include "db_updater.h"
 

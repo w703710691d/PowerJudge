@@ -4,8 +4,8 @@
 
 #include "db_updater.h"
 #include <mysql/mysql.h>
-#include "src/read_config.h"
-#include "src/log.h"
+#include "read_config.h"
+#include "powerlog.h"
 
 MYSQL mysql;
 bool mysqlOK = false;

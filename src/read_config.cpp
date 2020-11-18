@@ -5,9 +5,8 @@
 #include <cstdint>
 #include <cstdlib>
 #include "read_config.h"
-#include "src/misc.h"
-#include "src/log.h"
-#include "src/judge_core.h"
+#include "misc.h"
+#include "powerlog.h"
 
 const char *DEFAULT_CFG_FILE = "/etc/judged.conf";
 uint16_t DEFAULT_PORT = 55555;

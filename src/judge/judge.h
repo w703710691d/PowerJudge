@@ -10,7 +10,7 @@
 
 #include <cstdio>
 #include <cstdint>
-#include "src/judge_core.h"
+#include "judge_core.h"
 
 // 编译选项
 const char *CP_C11[] = {"gcc", "Main.c", "-fno-asm", "-lm", "-static", "-Wall",

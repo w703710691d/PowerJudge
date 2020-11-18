@@ -1,5 +1,5 @@
-﻿#ifndef POWERJUDGE_LOG_H
-#define POWERJUDGE_LOG_H
+﻿#ifndef POWERJUDGE_POWERLOG_H
+#define POWERJUDGE_POWERLOG_H
 
 #include <string>
 #include <filesystem>
@@ -55,4 +55,4 @@ PowerLogger::instance().writeLog(PowerLogger::WARNING, __FILE__, __LINE__, ##x)
 #define FM_LOG_FATAL(x...)  \
 PowerLogger::instance().writeLog(PowerLogger::FATAL,   __FILE__, __LINE__, ##x)
 
-#endif //POWERJUDGE_LOG_H
+#endif //POWERJUDGE_POWERLOG_H
