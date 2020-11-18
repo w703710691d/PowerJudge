@@ -7,7 +7,6 @@
 #include <cstring>
 #include <cstdlib>
 #include <sys/time.h>
-#include <csignal>
 #include <wait.h>
 #include <sys/resource.h>
 #include <pwd.h>
@@ -43,10 +42,9 @@ int main(int argc, char *argv[], char *envp[]) {
     }
     FM_LOG_DEBUG("\n\x1b[31m----- Power Judge 1.0 -----\x1b[0m");
 
-    judge_time_limit += oj_solution.time_limit;
-    judge_time_limit *= get_num_of_test();
+    judge_time_limit += oj_solution.time_limit * get_num_of_test();
 
-    if (EXIT_SUCCESS != malarm(ITIMER_REAL, judge_time_limit)) {
+    if (EXIT_SUCCESS != malarm(ITIMER_VIRTUAL, judge_time_limit)) {
         FM_LOG_FATAL("set alarm for judge failed: %s", strerror(errno));
         exit(EXIT_VERY_FIRST);
     }
@@ -357,13 +355,8 @@ void set_compile_limit() {
         return;
 
     rlimit lim{};
-    lim.rlim_cur = lim.rlim_max = compile_time_limit / 1000;
-    if (setrlimit(RLIMIT_CPU, &lim) < 0) {
-        FM_LOG_FATAL("setrlimit RLIMIT_CPU failed: %s", strerror(errno));
-        exit(EXIT_SET_LIMIT);
-    }
 
-    if (EXIT_SUCCESS != malarm(ITIMER_REAL, compile_time_limit)) {
+    if (EXIT_SUCCESS != malarm(ITIMER_VIRTUAL, compile_time_limit)) {
         FM_LOG_FATAL("malarm for compiler failed: %s", strerror(errno));
         exit(EXIT_SET_LIMIT);
     }
@@ -845,7 +838,7 @@ int oj_compare_output_spj(const char *file_in,    // std input file
     } else if (pid_spj == 0) {  // child process
 
         // Set spj timeout
-        if (EXIT_SUCCESS == malarm(ITIMER_REAL, spj_time_limit)) {
+        if (EXIT_SUCCESS == malarm(ITIMER_VIRTUAL, spj_time_limit)) {
             FM_LOG_TRACE("load spj: %s", spj_exec);
             execlp(spj_exec, spj_exec, file_in, file_out, file_user, NULL);
             FM_LOG_FATAL("execute spj failed");
