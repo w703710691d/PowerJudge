@@ -438,6 +438,7 @@ static int SC_PYTHON[512] = {
         SYS_prlimit64, SYSCALLS_INFINITE,
         SYS_pread64, SYSCALLS_INFINITE,
         SYS_getdents64, SYSCALLS_INFINITE,
+        SYS_clock_gettime, SYSCALLS_INFINITE,
         SYSCALLS_END
 };
 
