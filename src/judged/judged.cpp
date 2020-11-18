@@ -18,7 +18,7 @@
 #include <wait.h>
 #include "judged.h"
 #include "misc.h"
-#include "powerlog/powerlog.h"
+#include "powerlog.h"
 #include "thread_safe_queue.hpp"
 #include "read_config.h"
 #include <vector>
@@ -33,7 +33,7 @@ void ThreadWork() {
         oj_solution_t *oj_solution = ProcessQueue.GetFrontAndPop();
         if (oj_solution) {
             pthread_t ptid = pthread_self();
-            FM_LOG_TRACE("Thread id: %d", ptid);
+            FM_LOG_TRACE("Thread id: %ld", ptid);
             run(*oj_solution);
             delete oj_solution;
         }
@@ -46,7 +46,7 @@ void SendWork() {
         auto item = SendQueue.GetFrontAndPop();
         if (item) {
             pthread_t ptid = pthread_self();
-            FM_LOG_TRACE("Send thread id: %d", ptid);
+            FM_LOG_TRACE("Send thread id: %ld", ptid);
             if (item->first == EXIT_OK) {
                 update_result(item->second);
             } else {
@@ -58,9 +58,9 @@ void SendWork() {
 }
 
 int main(int argc, char *argv[], char *envp[]) {
-    PowerLogger::instance().setLogDir("/var/log/judged");
-    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
-    PowerLogger::instance().setBizName("PowerJudged");
+    powerLogSetLogDir("/var/log/judged");
+    powerLogSetLogLevel(LOGLEVEL_DEBUG);
+    powerLogSetBizName("PowerJudged");
     FM_LOG_TRACE("---");
     check_pid();
 

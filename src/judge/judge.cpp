@@ -21,7 +21,6 @@
 #include "db_updater.h"
 
 int main(int argc, char *argv[], char *envp[]) {
-    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
 
     init();
 
@@ -112,9 +111,9 @@ void parse_arguments(int argc, char *argv[]) {
                 exit(EXIT_BAD_PARAM);
         }
     }
-    PowerLogger::instance().setLogDir(work_dir_root);
-    PowerLogger::instance().setBizName("PowerJudger");
-    PowerLogger::instance().setLogLevel(PowerLogger::DEBUG);
+    powerLogSetLogDir(work_dir_root);
+    powerLogSetBizName("PowerJudger");
+    powerLogSetLogLevel(LOGLEVEL_DEBUG);
 
     check_arguments();
 

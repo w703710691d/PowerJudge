@@ -12,6 +12,7 @@
 #include "judge_core.h"
 #include <sys/time.h>
 #include <cstdarg>
+#include <cerrno>
 
 void fatal_error(const char *msg) {
     perror(msg);

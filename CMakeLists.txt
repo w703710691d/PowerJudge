@@ -4,12 +4,11 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(src)
-include_directories(src/powerlog)
+include_directories(src/powerlog/include)
 add_subdirectory(src/powerlog)
 
 ADD_EXECUTABLE(powerjudged
         src/judged/judged.cpp
-		src/powerlog/powerlog.cpp
         src/misc.cpp
         src/read_config.cpp)
 
@@ -17,7 +16,6 @@ ADD_EXECUTABLE(powerjudge
         src/judge/judge.cpp
         src/judge/db_updater.cpp
         src/judge/syscalls.cpp
-		src/powerlog/powerlog.cpp
         src/misc.cpp
         src/read_config.cpp
         )
