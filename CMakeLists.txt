@@ -21,7 +21,7 @@ ADD_EXECUTABLE(powerjudge
         )
 
 target_link_libraries(powerjudged powerlog bsd curl pthread)
-target_link_libraries(powerjudge powerlog mysqlclient)
+target_link_libraries(powerjudge powerlog mysqlclient pthread)
 
 set(CMAKE_INSTALL_PREFIX "/usr/local")
 
