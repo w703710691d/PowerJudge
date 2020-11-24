@@ -606,11 +606,14 @@ bool judge(const char *input_file,
 
             oj_solution.memory_usage = std::max(oj_solution.memory_usage, (unsigned long) rused.ru_maxrss);
             // TODO(power): check why memory exceed too much
-            if (oj_solution.memory_usage > oj_solution.memory_limit) {
-                oj_solution.result = OJ_MLE;
-                kill(executor, SIGKILL);
-                break;
+            if(oj_solution.lang != LANG_JAVA && oj_solution.lang != LANG_KOTLIN) {
+                    if (oj_solution.memory_usage > oj_solution.memory_limit) {
+                    oj_solution.result = OJ_MLE;
+                    kill(executor, SIGKILL);
+                    break;
+                }
             }
+            
 
             // check syscall
             if (ptrace(PTRACE_GETREGS, executor, NULL, &regs) < 0) {
@@ -640,10 +643,13 @@ bool judge(const char *input_file,
     }  // end of fork for judge process
 
     oj_solution.memory_usage = std::max(oj_solution.memory_usage, (unsigned long) rused.ru_maxrss);
-    if (oj_solution.memory_usage > oj_solution.memory_limit) {
-        oj_solution.result = OJ_MLE;
-        FM_LOG_NOTICE("memory limit exceeded: %d (fault: %d * %d)",
-                      oj_solution.memory_usage, rused.ru_minflt, page_size);
+
+    if(oj_solution.lang != LANG_JAVA && oj_solution.lang != LANG_KOTLIN) {
+        if (oj_solution.memory_usage > oj_solution.memory_limit) {
+            oj_solution.result = OJ_MLE;
+            FM_LOG_NOTICE("memory limit exceeded: %d (fault: %d * %d)",
+                        oj_solution.memory_usage, rused.ru_minflt, page_size);
+        }
     }
 
     oj_solution.time_usage = std::max(oj_solution.time_usage,
@@ -772,14 +778,21 @@ void set_limit(off_t fsize) {
         exit(EXIT_SET_LIMIT);
     }
 
-    if (oj_solution.lang <= LANG_PASCAL) {
-        // Memory control, raise SIGSEGV
+    // Memory control, raise SIGSEGV
+    if(oj_solution.lang != LANG_JAVA && oj_solution.lang != LANG_KOTLIN) {
         lim.rlim_cur = lim.rlim_max = (STD_MB << 10) + oj_solution.memory_limit * STD_KB;
         if (setrlimit(RLIMIT_AS, &lim) < 0) {
             FM_LOG_FATAL("setrlimit RLIMIT_AS failed: %s", strerror(errno));
             exit(EXIT_SET_LIMIT);
         }
+    } else {
+        static char javaXms[32], javaXmx[32];
+        sprintf(javaXms, "-Xms%luK", oj_solution.memory_limit);
+        sprintf(javaXmx, "-Xmx%luK", oj_solution.memory_limit);
+        EXEC_J[1] = javaXms;
+        EXEC_J[2] = javaXmx;
     }
+    
 
     // Stack space, raise SIGSEGV
     lim.rlim_cur = lim.rlim_max = stack_size_limit * STD_KB;
@@ -979,14 +992,12 @@ void fix_java_result(const char *stdout_file, const char *stderr_file) {
     int comp_res = execute_cmd("/bin/grep -q 'java.lang.OutOfMemoryError' %s", stderr_file);
     if (!comp_res) {
         oj_solution.result = OJ_MLE;
-        oj_solution.memory_usage = oj_solution.memory_limit * STD_KB;
         return;
     }
 
     comp_res = execute_cmd("/bin/grep -q 'java.lang.OutOfMemoryError' %s", stdout_file);
     if (!comp_res) {
         oj_solution.result = OJ_MLE;
-        oj_solution.memory_usage = oj_solution.memory_limit * STD_KB;
         return;
     }
 
