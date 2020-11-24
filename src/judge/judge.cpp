@@ -525,8 +525,7 @@ bool judge(const char *input_file,
             }
 
             if (WIFEXITED(status)) {
-                if ((oj_solution.lang != LANG_JAVA && oj_solution.lang != LANG_KOTLIN) ||
-                    WEXITSTATUS(status) == EXIT_SUCCESS) {
+                if (WEXITSTATUS(status) == EXIT_SUCCESS) {
                     // AC PE WA
                     FM_LOG_TRACE("normal quit");
                     int result;
@@ -673,6 +672,10 @@ bool judge(const char *input_file,
                        file_size(stderr_file_executive)) {
                 oj_solution.result = OJ_RE;
                 FM_LOG_TRACE("Runtime Error");
+            }
+        } else if (oj_solution.result == OJ_RE) {
+            if(oj_solution.lang == LANG_JAVA || oj_solution.lang == LANG_KOTLIN) {
+                fix_java_result(stdout_file_executive, stderr_file_executive);
             }
         }
         return false;
