@@ -35,9 +35,9 @@ const char *CP_PY27[] = {"python2.7", "-c", "import py_compile;py_compile.compil
 const char *CP_PY3[] = {"python3", "-c", "import py_compile;py_compile.compile(r'Main.py')", nullptr};
 const char *CP_KT[] = {"kotlinc", "Main.kt", nullptr};
 
-// "-Xms512m", "-Xmx512m", "-Xss256k"
-const char *EXEC_J[] = {"java", "-cp", ".", "-DONLINE_JUDGE=true", "-Djava.security.manager", "-Xss64m",
-                        "-Djava.security.policy=/home/judge/java.policy", "Main", nullptr};
+const char *EXEC_J[] = {"java", nullptr, nullptr, "-Xss64m", "-cp", ".", "-DONLINE_JUDGE=true",
+                        "-Djava.security.manager", "-Djava.security.policy=/home/judge/java.policy", "Main", nullptr};
+
 const char *EXEC_PY27[] = {"python2.7", "Main.py", nullptr};
 const char *EXEC_PY3[] = {"python3", "Main.py", nullptr};
 const char *EXEC_KT[] = {"kotlin", "-DONLINE_JUDGE=true", "MainKt", nullptr};
