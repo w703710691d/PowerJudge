@@ -43,12 +43,13 @@ add_custom_command(
         COMMAND sudo chown root:root $<TARGET_FILE:powerjudged>
         COMMAND sudo chmod 4775 $<TARGET_FILE:powerjudged>
 )
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+        add_custom_command(
+                TARGET powerjudge
+                POST_BUILD
+                COMMAND sudo chown judge:judge $<TARGET_FILE:powerjudge>
+                COMMAND sudo chmod 4775 $<TARGET_FILE:powerjudge>
+                COMMAND setcap cap_sys_chroot+ep $<TARGET_FILE:powerjudge>
+        )
 
-add_custom_command(
-        TARGET powerjudge
-        POST_BUILD
-        COMMAND sudo chown judge:judge $<TARGET_FILE:powerjudge>
-        COMMAND sudo chmod 4775 $<TARGET_FILE:powerjudge>
-        COMMAND setcap cap_sys_chroot+ep $<TARGET_FILE:powerjudge>
-)
-
+endif()
