@@ -2,6 +2,7 @@
 #define __JUDGE_TASK_CONTENT_H__
 
 #include <string>
+#include <memory>
 
 #include "judgecommon.h"
 
@@ -26,7 +27,14 @@ struct JudgeResult {
     size_t m_memoryUsage;  // KB
 };
 
-ExitReson buildJudgeTaskContent(JudgeTaskContent &judgeTaskContent, int argc,
-                                char *argv[]);
+class JudgeTaskContentMaker {
+public:
+    ~JudgeTaskContentMaker();
+    static JudgeTaskContentMaker& getInstance();
 
+    std::shared_ptr<JudgeTaskContent> makeJudgeTaskContentFromArgs(int argc,  char *argv[]);
+    std::shared_ptr<JudgeTaskContent> makeJudgeTaskContentFromJson(const std::string &json);
+private:
+    JudgeTaskContentMaker();
+};
 #endif

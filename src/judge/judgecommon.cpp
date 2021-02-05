@@ -18,18 +18,18 @@ const std::string& getSolutionStateName(const SolutionState solutionState) {
             {SolutionState::ValidatorError, "ValidatorError"},
             {SolutionState::Waiting, "Waiting"},
             {SolutionState::Running, "Running"},
-            {SolutionState::Rejuding, "Rejuding"},
+            {SolutionState::Rejudging, "Rejudging"},
             {SolutionState::Similar, "Similar"},
             {SolutionState::Compiling, "Compiling"},
             {SolutionState::Queuing, "Queuing"},
         };
-    const static std::string defualtName = "Unknow";
+    const static std::string defaultName = "Unknown";
     auto nameFinder = solutionStateMapper.find(solutionState);
     if (nameFinder == solutionStateMapper.end()) {
-        return defualtName;
+        return defaultName;
     } else {
         return nameFinder->second;
     }
 }
 
-void exitProcess(ExitReson reson) { exit(static_cast<int>(reson)); }
+void exitProcess(ExitReason reason) { exit(static_cast<int>(reason)); }

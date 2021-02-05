@@ -12,16 +12,9 @@ ADD_EXECUTABLE(powerjudged
         src/misc.cpp
         src/read_config.cpp)
 
-ADD_EXECUTABLE(powerjudge
-        src/judge/judge.cpp
-        src/judge/db_updater.cpp
-        src/judge/syscalls.cpp
-        src/misc.cpp
-        src/read_config.cpp
-        )
+add_subdirectory(src/judge)
 
 target_link_libraries(powerjudged powerlog bsd curl pthread)
-target_link_libraries(powerjudge powerlog mysqlclient pthread)
 
 set(CMAKE_INSTALL_PREFIX "/usr/local")
 
@@ -43,13 +36,3 @@ add_custom_command(
         COMMAND sudo chown root:root $<TARGET_FILE:powerjudged>
         COMMAND sudo chmod 4775 $<TARGET_FILE:powerjudged>
 )
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-        add_custom_command(
-                TARGET powerjudge
-                POST_BUILD
-                COMMAND sudo chown judge:judge $<TARGET_FILE:powerjudge>
-                COMMAND sudo chmod 4775 $<TARGET_FILE:powerjudge>
-                COMMAND setcap cap_sys_chroot+ep $<TARGET_FILE:powerjudge>
-        )
-
-endif()

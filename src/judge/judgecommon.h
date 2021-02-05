@@ -18,7 +18,7 @@ enum class SolutionState {
     ValidatorError = 10,
     Waiting = 11,
     Running = 12,
-    Rejuding = 13,
+    Rejudging = 13,
     Similar = 14,
     Compiling = 15,
     Queuing = 16,
@@ -47,7 +47,7 @@ enum class SpecialJudgeResult {
 };
 
 //退出原因
-enum class ExitReson {
+enum class ExitReason {
     OK = 0,
     UNPRIVILEGED = 1,
     CHDIR = 2,
@@ -77,10 +77,10 @@ enum class ExitReson {
     UNKNOWN = 127,
 };
 
-void exitProcess(ExitReson reson);
+void exitProcess(ExitReason reason);
 
 //错误原因
-enum class ErrorReson {
+enum class ErrorReason {
     GCC_COMPILE_ERROR = 1,
     ERROR_READ_FILE = 40,
     ERROR_READ_RESULT = 41,
@@ -88,7 +88,7 @@ enum class ErrorReson {
 
 //程序语言
 enum class ProgramLanguage {
-    Unkown = 0,
+    Unknown = 0,
     C11 = 1,
     Cpp11 = 2,
     Pascal = 3,
